@@ -1,6 +1,40 @@
 <body>
-  <app-nav-menu></app-nav-menu>
-  <div class="container">
-    <router-outlet></router-outlet>
+  <div class="container p-4">
+    <div class="row" *ngIf="constraints">
+      <div class="col-4">
+        <h1>Upload</h1>
+        <p>Acceptable formats:</p>
+        <ul>
+          <li *ngFor="let format of constraints.formats.split(',')">{{format}}</li>
+        </ul>
+        <p>Max size: {{constraints.size}} bytes</p>
+        <input type="text" placeholder="Your name" class="form-control" [(ngModel)]="username"/>
+        <br />
+        <input #file type="file" class="input" (change)="onFileUpload(file.files)" [accept]="constraints.formats" />
+        <p class="text-warning">{{status}}</p>
+      </div>
+      <div class="col-8" *ngIf="files">
+        <div *ngFor="let fileType of constraints.formats.split(',')">
+          <h5 class="text-center text-primary">{{fileType}}</h5>
+          <table class="table table-bordered ">
+            <tr>
+              <th>Name</th>
+              <th>Author</th>
+              <th>Size</th>
+              <th>Upload Date</th>
+            </tr>
+            <tbody>
+              <ng-container *ngFor="let file of files">
+                <tr *ngIf="'.' + file.fileName.split('.')[file.fileName.split('.').length - 1] == fileType">
+                  <th>{{file.fileName}}</th>
+                  <th>{{file.author}}</th>
+                  <th>{{file.size}}</th>
+                  <th>{{file.uploadDate.split('T')[0] + ' ' + file.uploadDate.split('T')[1].split('.')[0]}}</th>
+                </tr>
+              </ng-container>
+</table>
+        </div>
+      </div>
+    </div>
   </div>
 </body>

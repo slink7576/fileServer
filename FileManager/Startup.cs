@@ -1,8 +1,12 @@
+using ApplicationCore.Entities;
+using ApplicationCore.Interfaces;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +31,8 @@ namespace FileManager
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddDbContext<FilesContext>(op => op.UseSqlServer(Configuration["ConnectionString:FileManagerDB"]));
+            services.AddTransient(typeof(IRepository<FileData>), typeof(EfRepository<FileData>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +72,7 @@ namespace FileManager
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
         }
     }
 }
